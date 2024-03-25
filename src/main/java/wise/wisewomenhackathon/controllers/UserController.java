@@ -2,8 +2,10 @@ package wise.wisewomenhackathon.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wise.wisewomenhackathon.controllers.commands.UserCommand;
+import wise.wisewomenhackathon.controllers.response.UserResponse;
 import wise.wisewomenhackathon.model.User;
 import wise.wisewomenhackathon.service.UserService;
 
@@ -17,15 +19,14 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(value = "/users")
-    @ResponseStatus(HttpStatus.OK)
-    public List<User> users() {
-        return userService.users();
+    public ResponseEntity<List<UserResponse>> users() {
+        return ResponseEntity.ok()
+                .body(userService.users().stream().map(u -> new UserResponse(u.getUsername())).toList());
     }
 
     @GetMapping(value = "/users/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public User user(@PathVariable(value = "id") Long userId) {
-        return userService.user(userId);
+    public ResponseEntity<UserResponse> user(@PathVariable(value = "id") Long userId) {
+        return ResponseEntity.ok(new UserResponse(userService.user(userId).getUsername()));
     }
 
     @PostMapping(value = "/users")

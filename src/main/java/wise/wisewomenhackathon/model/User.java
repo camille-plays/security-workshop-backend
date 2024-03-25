@@ -8,10 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
 
 @Entity
-@Table(name = "user")
-@Data
+@Table(name = "users")
 public class User {
 
     @Id
@@ -23,10 +23,6 @@ public class User {
     @NotNull
     private String username;
 
-    @Column(name="salt")
-    @NotNull
-    private String salt;
-
     @Column(name = "password_hash")
     @NotNull
     private String passwordHash;
@@ -34,9 +30,12 @@ public class User {
     public User() {
     }
 
-    public User(String username, String salt, String passwordHash) {
+    public User(String username, String passwordHash) {
         this.username = username;
-        this.salt = salt;
         this.passwordHash = passwordHash;
+    }
+
+    public String getUsername() {
+        return this.username;
     }
 }

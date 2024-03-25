@@ -30,16 +30,14 @@ public class UserService {
 
     public User save(UserCommand userCommand) {
         // Generate a random salt
-        String salt = generateSalt();
+        //String salt = generateSalt();
 
         // Concatenate the salt with the plaintext password
-        String saltedPassword = userCommand.getPassword() + salt;
+        //String saltedPassword = userCommand.getPassword() + salt;
 
-        // Hash the salted password
-        String hashedPassword = passwordEncoder.encode(saltedPassword);
+        String hashedPassword = passwordEncoder.encode(userCommand.getPassword());
 
-        // Set the hashed password and salt in the user object
-        User user = new User(userCommand.getUsername(), salt, hashedPassword);
+        User user = new User(userCommand.getUsername(), hashedPassword);
 
         // Save the user
         return userRepository.save(user);
