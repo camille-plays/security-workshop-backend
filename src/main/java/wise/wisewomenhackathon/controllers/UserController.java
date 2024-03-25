@@ -40,4 +40,10 @@ public class UserController {
     public String delete(@PathVariable(value = "id") Long userId) {
         return userService.delete(userId);
     }
+
+    @DeleteMapping(value = "/users")
+    @ResponseStatus(HttpStatus.OK)
+    public String deleteUsers() {
+        return userService.deleteAll();
+    }
 }

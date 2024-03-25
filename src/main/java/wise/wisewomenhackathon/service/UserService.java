@@ -48,6 +48,11 @@ public class UserService {
         return "User deleted successfully";
     }
 
+    public String deleteAll() {
+        userRepository.deleteAll();
+        return "All users deleted successfully";
+    }
+
     private String generateSalt() {
         // Create a byte array to hold the salt
         byte[] salt = new byte[16]; // 16 bytes = 128 bits
