@@ -2,6 +2,7 @@ package wise.wisewomenhackathon.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import java.util.UUID;
 public class Balance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "uuid")
+    @Column(name = "balance_id")
     private UUID balanceId;
 
     @Column(name = "amount")
@@ -20,15 +21,23 @@ public class Balance {
 
     @Column(name = "user_id")
     @NotNull
+    @Getter
     private Long userId;
 
     public Balance() {
     }
 
-    public UUID getUUID() {
+    public Balance(Long userId, BigDecimal amount) {
+        this.userId = userId;
+        this.amount = amount;
+    }
+
+    public UUID getBalanceId() {
         return this.balanceId;
     }
 
-    public BigDecimal getAmount() { return this.amount; }
+    public BigDecimal getAmount() {
+        return this.amount;
+    }
 
 }
