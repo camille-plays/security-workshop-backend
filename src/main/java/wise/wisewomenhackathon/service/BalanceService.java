@@ -18,8 +18,12 @@ public class BalanceService {
         return balanceRepository.findByUserId(userId);
     }
 
-    public Balance save(BalanceCommand balanceCommand) {
-        Balance balance = new Balance(balanceCommand.getUserId(), balanceCommand.getAmount());
-        return balanceRepository.save(balance);
+    public void saveOrUpdateBalance(BalanceCommand balanceCommand) {
+        if (balanceRepository.findByUserId(balanceCommand.getUserId()).isPresent()) {
+            balanceRepository.updateBalanceByUserId(balanceCommand.getUserId(), balanceCommand.getAmount());
+        } else {
+            Balance balance = new Balance(balanceCommand.getUserId(), balanceCommand.getAmount());
+            balanceRepository.save(balance);
+        }
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.controllers.response.BalanceResponse;
 import wise.wisewomenhackathon.model.Balance;
-import wise.wisewomenhackathon.model.User;
 import wise.wisewomenhackathon.service.BalanceService;
 
 @RestController
@@ -19,8 +18,8 @@ public class BalanceController {
 
     @PostMapping(value = "/balances")
     @ResponseStatus(HttpStatus.CREATED)
-    public Balance save(@RequestBody BalanceCommand balanceCommand) {
-        return balanceService.save(balanceCommand);
+    public void save(@RequestBody BalanceCommand balanceCommand) {
+        balanceService.saveOrUpdateBalance(balanceCommand);
     }
 
     @GetMapping(value = "/balance/{id}")
