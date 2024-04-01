@@ -8,32 +8,39 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
-
     @Column(name = "username")
     @NotNull
     private String username;
 
-    @Column(name = "password_hash")
+    @Column(name = "password")
     @NotNull
-    private String passwordHash;
+    private String password;
 
-    public User() {
+    public Long getUserId() {
+        return userId;
     }
 
-    public User(String username, String passwordHash) {
+    public String getPassword() {
+        return password;
+    }
+
+    public UserEntity(String username, String password) {
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
+
+    public UserEntity() {}
 
     public String getUsername() {
         return this.username;

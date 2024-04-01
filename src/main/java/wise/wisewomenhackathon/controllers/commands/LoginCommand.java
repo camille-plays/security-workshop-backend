@@ -2,7 +2,7 @@ package wise.wisewomenhackathon.controllers.commands;
 
 import jakarta.validation.constraints.NotNull;
 
-public class UserCommand {
+public class LoginCommand {
 
     @NotNull
     private String username;
@@ -17,5 +17,4 @@ public class UserCommand {
     public String getPassword() {
         return password;
     }
-
 }
