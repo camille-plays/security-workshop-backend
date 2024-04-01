@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                /*.authorizeHttpRequests((requests) -> requests
+                .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home", "/api/auth/**").permitAll()
                         //to change to .authenticated()
                         .anyRequest().permitAll()
@@ -40,13 +40,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll())
-                .csrf(AbstractHttpConfigurer::disable);*/
-
-
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeRequests()
-                .requestMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
+                .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
