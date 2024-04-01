@@ -3,8 +3,8 @@ package wise.wisewomenhackathon.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import wise.wisewomenhackathon.controllers.commands.UserCommand;
-import wise.wisewomenhackathon.model.User;
+import wise.wisewomenhackathon.controllers.commands.RegisterCommand;
+import wise.wisewomenhackathon.model.UserEntity;
 import wise.wisewomenhackathon.repository.UserRepository;
 
 import java.security.SecureRandom;
@@ -20,24 +20,28 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<User> users() {
+    public List<UserEntity> users() {
         return userRepository.findAll();
     }
 
-    public User user(Long userId) {
-        return userRepository.findByUserId(userId);
+    public UserEntity user(Long userId) {
+        return userRepository.findByUserId(userId).orElseThrow();
     }
 
-    public User save(UserCommand userCommand) {
+    public Boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public UserEntity saveNewUser(RegisterCommand registerCommand) {
         // Generate a random salt
         //String salt = generateSalt();
 
         // Concatenate the salt with the plaintext password
         //String saltedPassword = userCommand.getPassword() + salt;
 
-        String hashedPassword = passwordEncoder.encode(userCommand.getPassword());
+        String hashedPassword = passwordEncoder.encode(registerCommand.getPassword());
 
-        User user = new User(userCommand.getUsername(), hashedPassword);
+        UserEntity user = new UserEntity(registerCommand.getUsername(), hashedPassword);
 
         // Save the user
         return userRepository.save(user);
