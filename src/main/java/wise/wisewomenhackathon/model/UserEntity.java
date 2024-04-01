@@ -9,10 +9,10 @@ import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
 public class UserEntity {
 
     @Id
@@ -39,6 +39,8 @@ public class UserEntity {
         this.username = username;
         this.password = password;
     }
+
+    public UserEntity() {}
 
     public String getUsername() {
         return this.username;

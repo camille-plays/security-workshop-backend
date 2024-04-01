@@ -28,16 +28,12 @@ public class UserService {
         return userRepository.findByUserId(userId).orElseThrow();
     }
 
-    public Boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
     public UserEntity saveNewUser(RegisterCommand registerCommand) {
         // Generate a random salt
-        //String salt = generateSalt();
+        String salt = generateSalt();
 
         // Concatenate the salt with the plaintext password
-        //String saltedPassword = userCommand.getPassword() + salt;
+        String saltedPassword = registerCommand.getPassword() + salt;
 
         String hashedPassword = passwordEncoder.encode(registerCommand.getPassword());
 

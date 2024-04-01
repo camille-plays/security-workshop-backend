@@ -30,18 +30,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((requests) -> requests
+                /*.authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home", "/api/auth/**").permitAll()
                         //to change to .authenticated()
                         .anyRequest().permitAll()
                 )
-                /*.formLogin((form) -> form
+                .formLogin((form) -> form
                         .loginPage("/login")
                         .permitAll()
-                )*/
+                )
                 .logout((logout) -> logout.permitAll())
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable);*/
 
+
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeRequests()
+                .requestMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated();
         return http.build();
     }
 

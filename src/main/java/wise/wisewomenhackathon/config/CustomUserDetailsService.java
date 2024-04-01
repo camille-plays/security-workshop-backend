@@ -1,5 +1,6 @@
 package wise.wisewomenhackathon.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,6 +16,8 @@ import java.util.Collection;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+
+    @Autowired
     private UserRepository userRepository;
 
     @Override
