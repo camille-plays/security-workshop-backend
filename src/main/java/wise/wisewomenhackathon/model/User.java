@@ -1,13 +1,7 @@
 package wise.wisewomenhackathon.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.Getter;
 
 @Entity
@@ -16,26 +10,26 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "username")
+    @Getter
     @NotNull
     private String username;
 
     @Column(name = "password_hash")
+    @Getter
     @NotNull
-    private String passwordHash;
+    private String password;
 
     public User() {
     }
 
-    public User(String username, String passwordHash) {
+    public User(String username, String password) {
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
 
-    public String getUsername() {
-        return this.username;
-    }
 }
