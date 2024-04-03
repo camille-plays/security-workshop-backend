@@ -20,4 +20,7 @@ public interface BalanceRepository extends JpaRepository<Balance, UUID> {
     void updateBalanceByUserId(Long userId, BigDecimal amount);
 
     Optional<Balance> findByUserId(Long userId);
+
+    Optional<Balance> findByBalanceId(UUID balanceId);
+
 }

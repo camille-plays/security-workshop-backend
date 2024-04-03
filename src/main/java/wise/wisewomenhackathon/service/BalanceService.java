@@ -7,6 +7,7 @@ import wise.wisewomenhackathon.model.Balance;
 import wise.wisewomenhackathon.repository.BalanceRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class BalanceService {
@@ -17,6 +18,11 @@ public class BalanceService {
     public Optional<Balance> balance(Long userId) {
         return balanceRepository.findByUserId(userId);
     }
+
+    public Optional<Balance> balance(UUID balanceId) {
+        return balanceRepository.findByBalanceId(balanceId);
+    }
+
 
     public void saveOrUpdateBalance(BalanceCommand balanceCommand) {
         if (balanceRepository.findByUserId(balanceCommand.getUserId()).isPresent()) {
