@@ -19,6 +19,11 @@ public interface BalanceRepository extends JpaRepository<Balance, UUID> {
     @Query("UPDATE Balance b SET b.amount = :amount WHERE b.userId = :userId")
     void updateBalanceByUserId(Long userId, BigDecimal amount);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE Balance b SET b.amount = :amount WHERE b.balanceId = :balanceId")
+    void updateBalanceByBalanceId(UUID balanceId, BigDecimal amount);
+
     Optional<Balance> findByUserId(Long userId);
 
     Optional<Balance> findByBalanceId(UUID balanceId);

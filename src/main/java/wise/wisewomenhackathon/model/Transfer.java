@@ -11,6 +11,12 @@ import java.util.UUID;
 @Table(name = "transfers")
 public class Transfer {
 
+    public Transfer(BigDecimal amount, UUID sourceBalanceId, UUID destinationBalanceId) {
+        this.amount = amount;
+        this.sourceBalanceId = sourceBalanceId;
+        this.destinationBalanceId = destinationBalanceId;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transfer_id")
