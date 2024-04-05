@@ -26,11 +26,11 @@ public class BalanceService {
     }
 
 
-    public void saveOrUpdateBalance(BalanceCommand balanceCommand) {
-        if (balanceRepository.findByUserId(balanceCommand.getUserId()).isPresent()) {
-            balanceRepository.updateBalanceByUserId(balanceCommand.getUserId(), balanceCommand.getAmount());
+    public void saveOrUpdateBalance(Long userId, BalanceCommand balanceCommand) {
+        if (balanceRepository.findByUserId(userId).isPresent()) {
+            balanceRepository.updateBalanceByUserId(userId, balanceCommand.getAmount());
         } else {
-            Balance balance = new Balance(balanceCommand.getUserId(), balanceCommand.getAmount());
+            Balance balance = new Balance(userId, balanceCommand.getAmount());
             balanceRepository.save(balance);
         }
     }

@@ -21,15 +21,16 @@ public class BalanceController {
     @PostMapping(value = "/balances")
     @ResponseStatus(HttpStatus.CREATED)
     public void save(@RequestBody BalanceCommand balanceCommand) {
-        balanceService.saveOrUpdateBalance(balanceCommand);
+        balanceService.saveOrUpdateBalance(getUserIdFromToken(), balanceCommand);
     }
 
     @GetMapping(value = "/balance/{id}")
     public ResponseEntity<BalanceResponse> balance(@PathVariable(value = "id") Long userId) {
-        Long userIdFromToken = getUserIdFromToken();
+        // vulnerability: there is no authorization check here
+        /*Long userIdFromToken = getUserIdFromToken();
         if (!userIdFromToken.equals(userId)) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
+        }*/
         Balance balance = balanceService.balance(userId).orElseThrow(() -> new BalanceNotFoundException("Balance not found for user ID: " + userId));
         return ResponseEntity.ok()
                 .body(new BalanceResponse(balance.getBalanceId(), balance.getAmount()));

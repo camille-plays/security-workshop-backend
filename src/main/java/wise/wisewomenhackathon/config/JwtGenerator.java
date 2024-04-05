@@ -15,12 +15,13 @@ public class JwtGenerator {
 
     SignatureAlgorithm sa = SignatureAlgorithm.HS512;
 
-    public String generateToken(Authentication authentication) {
+    public String generateToken(Authentication authentication, String userId) {
         String username = authentication.getName();
         Date currentDate = new Date();
         Date expiryDate = new Date(currentDate.getTime() + JWT_EXPIRATION);
         String token = Jwts.builder()
                 .setSubject(username)
+                .setId(userId)
                 .setIssuedAt(currentDate)
                 .setExpiration(expiryDate)
                 .signWith(sa, JWT_SECRET)
@@ -46,7 +47,15 @@ public class JwtGenerator {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        System.out.println("token subject is " + claims.getSubject());
         return claims.getSubject();
+    }
+
+    public String getUserIdFromToken(String token){
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(JWT_SECRET)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getId();
     }
 }

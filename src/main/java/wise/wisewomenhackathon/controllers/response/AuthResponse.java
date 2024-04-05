@@ -6,8 +6,10 @@ import lombok.Data;
 public class AuthResponse {
     public String accessToken;
     public String tokenType;
+    public String userId;
 
-    public AuthResponse(String accessToken) {
+    public AuthResponse(String accessToken, String userId) {
         this.accessToken = accessToken;
+        this.userId = userId;
     }
 }

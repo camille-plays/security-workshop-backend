@@ -41,8 +41,9 @@ public class AuthController {
                             loginCommand.getUsername(),
                             loginCommand.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            String token = jwtGenerator.generateToken(authentication);
-            return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
+            String userId = authentication.getAuthorities().stream().findFirst().get().toString();
+            String token = jwtGenerator.generateToken(authentication, userId);
+            return new ResponseEntity<>(new AuthResponse(token, userId), HttpStatus.OK);
         } catch(Exception e) {
             System.out.println("error was " + e.getMessage());
         }
