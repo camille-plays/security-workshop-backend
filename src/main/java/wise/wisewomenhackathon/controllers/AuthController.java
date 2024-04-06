@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import wise.wisewomenhackathon.Exceptions.UsernameAlreadyExists;
 import wise.wisewomenhackathon.config.JwtGenerator;
 import wise.wisewomenhackathon.controllers.commands.LoginCommand;
 import wise.wisewomenhackathon.controllers.commands.RegisterCommand;
@@ -51,11 +52,18 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<String> register(@RequestBody RegisterCommand registerCommand) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterCommand registerCommand) {
         if (userRepository.existsByUsername(registerCommand.getUsername())) {
-            return new ResponseEntity<>("username is taken", HttpStatus.BAD_REQUEST);
+            throw new UsernameAlreadyExists("username is already taken");
         }
         userRepository.save(new UserEntity(registerCommand.getUsername(), passwordEncoder.encode(registerCommand.getPassword())));
-        return new ResponseEntity<>("user registered successfully", HttpStatus.OK);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        registerCommand.getUsername(),
+                        registerCommand.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String userId = authentication.getAuthorities().stream().findFirst().get().toString();
+        String token = jwtGenerator.generateToken(authentication, userId);
+        return new ResponseEntity<>(new AuthResponse(token, userId), HttpStatus.OK);
     }
 }

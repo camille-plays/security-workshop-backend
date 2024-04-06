@@ -21,4 +21,9 @@ public class RestExceptionHandler {
     public ResponseEntity<String> incorrectBalanceType(IncorrectBalanceTypeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler(UsernameAlreadyExists.class)
+    public ResponseEntity<String> usernameTaken(UsernameAlreadyExists ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
