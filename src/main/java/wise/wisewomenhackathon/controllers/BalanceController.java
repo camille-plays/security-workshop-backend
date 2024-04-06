@@ -26,10 +26,9 @@ public class BalanceController {
     @PostMapping(value = "/balances")
     @ResponseStatus(HttpStatus.CREATED)
     public void save(@RequestBody(required = false) BalanceCommand balanceCommand) {
-        if (balanceCommand == null) {
-            balanceCommand = new BalanceCommand();
-        }
-        balanceService.saveOrUpdateBalance(securityUtils.getUserIdFromToken(), balanceCommand);
+        // vulnerability: you can change your balance type to charity, then you will get displayed on other people's account as a recipient
+        BalanceCommand balance = balanceCommand != null ? balanceCommand : new BalanceCommand();
+        balanceService.saveOrUpdateBalance(securityUtils.getUserIdFromToken(), balance);
     }
 
     @GetMapping(value = "/balance/{id}")

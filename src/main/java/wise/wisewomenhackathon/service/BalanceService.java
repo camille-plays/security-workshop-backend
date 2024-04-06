@@ -2,6 +2,7 @@ package wise.wisewomenhackathon.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import wise.wisewomenhackathon.Exceptions.BalanceLimitReachedException;
 import wise.wisewomenhackathon.Exceptions.BalanceNotFoundException;
 import wise.wisewomenhackathon.Exceptions.IncorrectBalanceTypeException;
 import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
@@ -33,7 +34,7 @@ public class BalanceService {
 
 
     public void saveOrUpdateBalance(Long userId, BalanceCommand balanceCommand) {
-        validateBalanceType(balanceCommand);
+        validateBalance(balanceCommand);
         if (balanceRepository.findByUserId(userId).isPresent()) {
             balanceRepository.updateBalanceByUserId(userId, balanceCommand.getAmount(), balanceCommand.getType());
         } else {
@@ -50,9 +51,12 @@ public class BalanceService {
         }
     }
 
-    private void validateBalanceType(BalanceCommand balanceCommand) {
+    private void validateBalance(BalanceCommand balanceCommand) {
         if (!("user".equals(balanceCommand.getType()) || "charity".equals(balanceCommand.getType()))) {
             throw new IncorrectBalanceTypeException("Invalid balance type");
+        }
+        if (new BigDecimal("100").compareTo(balanceCommand.getAmount()) < 0) {
+            throw new BalanceLimitReachedException("balance limit is 100");
         }
     }
 }

@@ -26,4 +26,9 @@ public class RestExceptionHandler {
     public ResponseEntity<String> usernameTaken(UsernameAlreadyExists ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler(BalanceLimitReachedException.class)
+    public ResponseEntity<String> balanceLimit(BalanceLimitReachedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
