@@ -1,13 +1,10 @@
 package wise.wisewomenhackathon.controllers.commands;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.math.BigDecimal;
 
 public class BalanceCommand {
 
-    @NotNull
-    private BigDecimal amount;
+    private BigDecimal amount = new BigDecimal("10.0");
 
     public BigDecimal getAmount() {
         return amount;
@@ -17,5 +14,10 @@ public class BalanceCommand {
 
     public String getType() {
         return type;
+    }
+
+    public BalanceCommand() {
+        this.amount = new BigDecimal("10.0");
+        this.type = "user";
     }
 }

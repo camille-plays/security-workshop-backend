@@ -42,7 +42,7 @@ public class BalanceService {
         }
     }
 
-    public void updateBalance(UUID balanceId, BigDecimal amount) {
+    public void updateBalanceAmount(UUID balanceId, BigDecimal amount) {
         if (balanceRepository.findByBalanceId(balanceId).isPresent()) {
             balanceRepository.updateBalanceByBalanceId(balanceId, amount);
         } else {

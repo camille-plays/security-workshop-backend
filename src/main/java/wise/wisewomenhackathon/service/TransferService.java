@@ -35,8 +35,8 @@ public class TransferService {
     @Transactional
     protected void processTransfer(Balance sourceBalance, Balance destinationBalance, BigDecimal amount) {
         // vulnerability: balance can be increased with a negative value
-        balanceService.updateBalance(sourceBalance.getBalanceId(), sourceBalance.getAmount().subtract(amount));
-        balanceService.updateBalance(destinationBalance.getBalanceId(), destinationBalance.getAmount().add(amount));
+        balanceService.updateBalanceAmount(sourceBalance.getBalanceId(), sourceBalance.getAmount().subtract(amount));
+        balanceService.updateBalanceAmount(destinationBalance.getBalanceId(), destinationBalance.getAmount().add(amount));
         transferRepository.save(new Transfer(amount, sourceBalance.getBalanceId(), destinationBalance.getBalanceId()));
     }
 }

@@ -22,7 +22,10 @@ public class BalanceController {
 
     @PostMapping(value = "/balances")
     @ResponseStatus(HttpStatus.CREATED)
-    public void save(@RequestBody BalanceCommand balanceCommand) {
+    public void save(@RequestBody(required = false) BalanceCommand balanceCommand) {
+        if (balanceCommand == null) {
+            balanceCommand = new BalanceCommand();
+        }
         balanceService.saveOrUpdateBalance(getUserIdFromToken(), balanceCommand);
     }
 
