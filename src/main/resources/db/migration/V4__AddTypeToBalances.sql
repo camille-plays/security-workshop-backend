@@ -1,0 +1,1 @@
+ALTER TABLE balances ADD type VARCHAR(100);

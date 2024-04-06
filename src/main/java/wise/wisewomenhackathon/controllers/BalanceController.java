@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import wise.wisewomenhackathon.Exceptions.BalanceNotFoundException;
 import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.controllers.response.BalanceResponse;
+import wise.wisewomenhackathon.controllers.response.UserResponse;
 import wise.wisewomenhackathon.model.Balance;
 import wise.wisewomenhackathon.service.BalanceService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1")
@@ -34,6 +37,12 @@ public class BalanceController {
         Balance balance = balanceService.balance(userId).orElseThrow(() -> new BalanceNotFoundException("Balance not found for user ID: " + userId));
         return ResponseEntity.ok()
                 .body(new BalanceResponse(balance.getBalanceId(), balance.getAmount()));
+    }
+
+    @GetMapping(value = "/charities")
+    public ResponseEntity<List<BalanceResponse>> charities() {
+        List<Balance> charities = balanceService.charities().orElseThrow(() -> new BalanceNotFoundException("No charity balances found"));
+        return ResponseEntity.ok().body(charities.stream().map(charity -> new BalanceResponse(charity.getBalanceId(), charity.getAmount())).toList());
     }
 
     private Long getUserIdFromToken() {

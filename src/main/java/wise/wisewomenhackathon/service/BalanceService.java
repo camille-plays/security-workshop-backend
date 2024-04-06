@@ -8,6 +8,7 @@ import wise.wisewomenhackathon.model.Balance;
 import wise.wisewomenhackathon.repository.BalanceRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +22,10 @@ public class BalanceService {
         return balanceRepository.findByUserId(userId);
     }
 
+    public Optional<List<Balance>> charities() {
+        return balanceRepository.findAllByType("charity");
+    }
+
     public Optional<Balance> balance(UUID balanceId) {
         return balanceRepository.findByBalanceId(balanceId);
     }
@@ -28,9 +33,9 @@ public class BalanceService {
 
     public void saveOrUpdateBalance(Long userId, BalanceCommand balanceCommand) {
         if (balanceRepository.findByUserId(userId).isPresent()) {
-            balanceRepository.updateBalanceByUserId(userId, balanceCommand.getAmount());
+            balanceRepository.updateBalanceByUserId(userId, balanceCommand.getAmount(), balanceCommand.getType());
         } else {
-            Balance balance = new Balance(userId, balanceCommand.getAmount());
+            Balance balance = new Balance(userId, balanceCommand.getAmount(), balanceCommand.getType());
             balanceRepository.save(balance);
         }
     }

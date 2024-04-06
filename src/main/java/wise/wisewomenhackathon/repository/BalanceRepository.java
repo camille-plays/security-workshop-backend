@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import wise.wisewomenhackathon.model.Balance;
+import wise.wisewomenhackathon.model.UserEntity;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,8 +18,8 @@ public interface BalanceRepository extends JpaRepository<Balance, UUID> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE Balance b SET b.amount = :amount WHERE b.userId = :userId")
-    void updateBalanceByUserId(Long userId, BigDecimal amount);
+    @Query("UPDATE Balance b SET b.amount = :amount, b.type = :type WHERE b.userId = :userId")
+    void updateBalanceByUserId(Long userId, BigDecimal amount, String type);
 
     @Transactional
     @Modifying
@@ -27,5 +29,7 @@ public interface BalanceRepository extends JpaRepository<Balance, UUID> {
     Optional<Balance> findByUserId(Long userId);
 
     Optional<Balance> findByBalanceId(UUID balanceId);
+
+    Optional<List<Balance>> findAllByType(String type);
 
 }

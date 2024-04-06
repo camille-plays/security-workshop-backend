@@ -13,4 +13,9 @@ public class BalanceCommand {
         return amount;
     }
 
+    private String type = "user";
+
+    public String getType() {
+        return type;
+    }
 }

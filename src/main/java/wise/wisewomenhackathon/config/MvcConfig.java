@@ -8,13 +8,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/home").setViewName("home");
-        registry.addViewController("/").setViewName("home");
-        registry.addViewController("/hello").setViewName("hello");
-        registry.addViewController("/login").setViewName("login");
-    }
-
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // Add CORS mapping for all endpoints
                 .allowedOrigins("http://localhost:3000")

@@ -24,12 +24,17 @@ public class Balance {
     @Getter
     private Long userId;
 
+    @Column(name = "type")
+    @Getter
+    private String type;
+
     public Balance() {
     }
 
-    public Balance(Long userId, BigDecimal amount) {
+    public Balance(Long userId, BigDecimal amount, String type) {
         this.userId = userId;
         this.amount = amount;
+        this.type = type;
     }
 
     public UUID getBalanceId() {
