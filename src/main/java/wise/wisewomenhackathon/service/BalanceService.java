@@ -51,7 +51,7 @@ public class BalanceService {
     }
 
     private void validateBalanceType(BalanceCommand balanceCommand) {
-        if (balanceCommand.getType() != "user" && balanceCommand.getType() != "charity") {
+        if (!("user".equals(balanceCommand.getType()) || "charity".equals(balanceCommand.getType()))) {
             throw new IncorrectBalanceTypeException("Invalid balance type");
         }
     }
