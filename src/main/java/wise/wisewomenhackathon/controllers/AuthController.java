@@ -37,14 +37,7 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginCommand loginCommand) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginCommand.getUsername(),
-                            loginCommand.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String userId = authentication.getAuthorities().stream().findFirst().get().toString();
-            String token = jwtGenerator.generateToken(authentication, userId);
-            return new ResponseEntity<>(new AuthResponse(token, userId), HttpStatus.OK);
+            return new ResponseEntity<>(authenticationAndGenerateToken(loginCommand.getUsername(), loginCommand.getPassword()), HttpStatus.OK);
         } catch(Exception e) {
             System.out.println("error was " + e.getMessage());
         }
@@ -57,13 +50,17 @@ public class AuthController {
             throw new UsernameAlreadyExists("username is already taken");
         }
         userRepository.save(new UserEntity(registerCommand.getUsername(), passwordEncoder.encode(registerCommand.getPassword())));
+        return new ResponseEntity<>(authenticationAndGenerateToken(registerCommand.getUsername(), registerCommand.getPassword()), HttpStatus.OK);
+    }
+
+    private AuthResponse authenticationAndGenerateToken(String username, String password) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        registerCommand.getUsername(),
-                        registerCommand.getPassword()));
+                        username,
+                        password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String userId = authentication.getAuthorities().stream().findFirst().get().toString();
         String token = jwtGenerator.generateToken(authentication, userId);
-        return new ResponseEntity<>(new AuthResponse(token, userId), HttpStatus.OK);
+        return new AuthResponse(token, userId);
     }
 }
