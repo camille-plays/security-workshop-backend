@@ -3,6 +3,7 @@ package wise.wisewomenhackathon.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wise.wisewomenhackathon.Exceptions.BalanceNotFoundException;
+import wise.wisewomenhackathon.Exceptions.IncorrectBalanceTypeException;
 import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.model.Balance;
 import wise.wisewomenhackathon.repository.BalanceRepository;
@@ -32,6 +33,7 @@ public class BalanceService {
 
 
     public void saveOrUpdateBalance(Long userId, BalanceCommand balanceCommand) {
+        validateBalanceType(balanceCommand);
         if (balanceRepository.findByUserId(userId).isPresent()) {
             balanceRepository.updateBalanceByUserId(userId, balanceCommand.getAmount(), balanceCommand.getType());
         } else {
@@ -45,6 +47,12 @@ public class BalanceService {
             balanceRepository.updateBalanceByBalanceId(balanceId, amount);
         } else {
             throw new BalanceNotFoundException("Balance not found while updating founds");
+        }
+    }
+
+    private void validateBalanceType(BalanceCommand balanceCommand) {
+        if (balanceCommand.getType() != "user" && balanceCommand.getType() != "charity") {
+            throw new IncorrectBalanceTypeException("Invalid balance type");
         }
     }
 }

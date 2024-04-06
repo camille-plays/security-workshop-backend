@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import wise.wisewomenhackathon.Exceptions.BalanceNotFoundException;
 import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.controllers.response.BalanceResponse;
-import wise.wisewomenhackathon.controllers.response.UserResponse;
 import wise.wisewomenhackathon.model.Balance;
 import wise.wisewomenhackathon.service.BalanceService;
 

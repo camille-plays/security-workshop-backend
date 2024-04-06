@@ -16,4 +16,9 @@ public class RestExceptionHandler {
     public ResponseEntity<String> hanldeInsufficientFounds(InsufficientFoundsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler(IncorrectBalanceTypeException.class)
+    public ResponseEntity<String> incorrectBalanceType(IncorrectBalanceTypeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
