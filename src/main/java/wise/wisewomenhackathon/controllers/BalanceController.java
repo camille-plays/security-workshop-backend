@@ -3,13 +3,13 @@ package wise.wisewomenhackathon.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import wise.wisewomenhackathon.Exceptions.BalanceNotFoundException;
 import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.controllers.response.BalanceResponse;
 import wise.wisewomenhackathon.model.Balance;
 import wise.wisewomenhackathon.service.BalanceService;
+import wise.wisewomenhackathon.service.SecurityUtils;
 
 import java.util.List;
 
@@ -20,13 +20,16 @@ public class BalanceController {
     @Autowired
     private BalanceService balanceService;
 
+    @Autowired
+    private SecurityUtils securityUtils;
+
     @PostMapping(value = "/balances")
     @ResponseStatus(HttpStatus.CREATED)
     public void save(@RequestBody(required = false) BalanceCommand balanceCommand) {
         if (balanceCommand == null) {
             balanceCommand = new BalanceCommand();
         }
-        balanceService.saveOrUpdateBalance(getUserIdFromToken(), balanceCommand);
+        balanceService.saveOrUpdateBalance(securityUtils.getUserIdFromToken(), balanceCommand);
     }
 
     @GetMapping(value = "/balance/{id}")
@@ -45,13 +48,5 @@ public class BalanceController {
     public ResponseEntity<List<BalanceResponse>> charities() {
         List<Balance> charities = balanceService.charities().orElseThrow(() -> new BalanceNotFoundException("No charity balances found"));
         return ResponseEntity.ok().body(charities.stream().map(charity -> new BalanceResponse(charity.getBalanceId(), charity.getAmount())).toList());
-    }
-
-    private Long getUserIdFromToken() {
-        var authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        if (authorities.stream().findFirst().isEmpty()) {
-            throw new RuntimeException("Provided token does not contain authorities");
-        }
-        return Long.parseLong(authorities.stream().findFirst().get().toString());
     }
 }
