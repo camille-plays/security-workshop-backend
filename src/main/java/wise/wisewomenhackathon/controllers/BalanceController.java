@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import wise.wisewomenhackathon.Exceptions.BalanceNotFoundException;
 import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.controllers.response.BalanceResponse;
+import wise.wisewomenhackathon.controllers.response.CharityResponse;
 import wise.wisewomenhackathon.model.Balance;
 import wise.wisewomenhackathon.service.BalanceService;
+import wise.wisewomenhackathon.service.CharityService;
 import wise.wisewomenhackathon.service.SecurityUtils;
+import wise.wisewomenhackathon.service.UserService;
 
 import java.util.List;
 
@@ -22,6 +25,12 @@ public class BalanceController {
 
     @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CharityService charityService;
 
     @PostMapping(value = "/balances")
     @ResponseStatus(HttpStatus.CREATED)
@@ -44,8 +53,14 @@ public class BalanceController {
     }
 
     @GetMapping(value = "/charities")
-    public ResponseEntity<List<BalanceResponse>> charities() {
+    public ResponseEntity<List<CharityResponse>> charities() {
         List<Balance> charities = balanceService.charities().orElseThrow(() -> new BalanceNotFoundException("No charity balances found"));
-        return ResponseEntity.ok().body(charities.stream().map(charity -> new BalanceResponse(charity.getBalanceId(), charity.getAmount())).toList());
+        List<CharityResponse> responses = charities.stream()
+                .map(charity -> {
+                    String username = userService.user(charity.getUserId()).getUsername();
+                    return new CharityResponse(charity.getBalanceId(), username, charityService.getCharityDescription(username));
+                })
+                .toList();
+        return ResponseEntity.ok().body(responses);
     }
 }

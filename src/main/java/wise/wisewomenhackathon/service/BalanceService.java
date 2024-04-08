@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 import wise.wisewomenhackathon.Exceptions.BalanceLimitReachedException;
 import wise.wisewomenhackathon.Exceptions.BalanceNotFoundException;
 import wise.wisewomenhackathon.Exceptions.IncorrectBalanceTypeException;
+import wise.wisewomenhackathon.Exceptions.UserIdNotFoundException;
+import wise.wisewomenhackathon.config.CharityConfiguration;
 import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.model.Balance;
 import wise.wisewomenhackathon.repository.BalanceRepository;
+import wise.wisewomenhackathon.repository.UserRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +22,8 @@ public class BalanceService {
 
     @Autowired
     BalanceRepository balanceRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Optional<Balance> balance(Long userId) {
         return balanceRepository.findByUserId(userId);
@@ -30,6 +35,14 @@ public class BalanceService {
 
     public Optional<Balance> balance(UUID balanceId) {
         return balanceRepository.findByBalanceId(balanceId);
+    }
+
+    public void internalInitialiseBalance(Long userId, String type) {
+        if (userRepository.findByUserId(userId).isPresent()) {
+            balanceRepository.save(new Balance(userId, new BigDecimal("10.0"), type));
+        } else {
+            throw new UserIdNotFoundException();
+        }
     }
 
 

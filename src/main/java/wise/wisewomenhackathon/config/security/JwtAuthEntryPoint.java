@@ -1,4 +1,4 @@
-package wise.wisewomenhackathon.config;
+package wise.wisewomenhackathon.config.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

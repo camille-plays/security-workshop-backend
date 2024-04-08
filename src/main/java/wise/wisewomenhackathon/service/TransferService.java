@@ -23,6 +23,7 @@ public class TransferService {
 
     public void createTransfer(TransferCommand transferCommand) {
         // Keep no authorization on purpose as vulnerability
+        // vulnerability: transfer does not check balance limit of 100
         Balance sourceBalance = balanceService.balance(transferCommand.getSourceBalanceId()).orElseThrow(() -> new BalanceNotFoundException("source balance not found"));
         Balance destinationBalance = balanceService.balance(transferCommand.getDestinationBalanceId()).orElseThrow(() -> new BalanceNotFoundException("destination balance not found"));
         if (sourceBalance.getAmount().compareTo(transferCommand.getAmount()) >= 0) {

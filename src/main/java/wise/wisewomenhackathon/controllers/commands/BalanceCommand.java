@@ -16,6 +16,11 @@ public class BalanceCommand {
         return type;
     }
 
+    public BalanceCommand(BigDecimal amount, String type) {
+        this.amount = amount;
+        this.type = type;
+    }
+
     public BalanceCommand() {
         this.amount = new BigDecimal("10.0");
         this.type = "user";

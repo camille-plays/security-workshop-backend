@@ -1,9 +1,9 @@
 package wise.wisewomenhackathon.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import wise.wisewomenhackathon.controllers.commands.RegisterCommand;
 import wise.wisewomenhackathon.model.UserEntity;
 import wise.wisewomenhackathon.repository.UserRepository;
 
@@ -20,6 +20,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private BalanceService balanceService;
+
     public List<UserEntity> users() {
         return userRepository.findAll();
     }
@@ -28,19 +31,28 @@ public class UserService {
         return userRepository.findByUserId(userId).orElseThrow();
     }
 
-    public UserEntity saveNewUser(RegisterCommand registerCommand) {
+    @Transactional
+    public UserEntity saveNewUserInitialiser(String username, String password, String type) {
+        if (userRepository.existsByUsername(username)) {
+            return userRepository.findByUsername(username).get();
+        }
         // Generate a random salt
         String salt = generateSalt();
 
         // Concatenate the salt with the plaintext password
-        String saltedPassword = registerCommand.getPassword() + salt;
+        String saltedPassword = password + salt;
 
-        String hashedPassword = passwordEncoder.encode(registerCommand.getPassword());
+        String hashedPassword = passwordEncoder.encode(password);
 
-        UserEntity user = new UserEntity(registerCommand.getUsername(), hashedPassword);
+        UserEntity user = new UserEntity(username, hashedPassword);
 
         // Save the user
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        // Add balance for this user
+        balanceService.internalInitialiseBalance(user.getUserId(), type);
+
+        return user;
     }
 
     public String delete(Long userId) {

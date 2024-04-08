@@ -12,8 +12,13 @@ public class RegisterCommand {
     public String getUsername() {
         return username;
     }
-
     public String getPassword() {
         return password;
+    }
+
+
+    public RegisterCommand(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 }

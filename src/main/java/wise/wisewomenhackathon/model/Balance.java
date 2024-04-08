@@ -45,4 +45,6 @@ public class Balance {
         return this.amount;
     }
 
+    public Long getUserId() {return this.userId;}
+
 }

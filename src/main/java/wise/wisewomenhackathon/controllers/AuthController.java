@@ -10,28 +10,35 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import wise.wisewomenhackathon.Exceptions.UsernameAlreadyExists;
-import wise.wisewomenhackathon.config.JwtGenerator;
+import wise.wisewomenhackathon.config.security.JwtGenerator;
+import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.controllers.commands.LoginCommand;
 import wise.wisewomenhackathon.controllers.commands.RegisterCommand;
 import wise.wisewomenhackathon.controllers.response.AuthResponse;
 import wise.wisewomenhackathon.model.UserEntity;
 import wise.wisewomenhackathon.repository.UserRepository;
+import wise.wisewomenhackathon.service.BalanceService;
+import wise.wisewomenhackathon.service.UserService;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
+    private final BalanceService balanceService;
+    private final UserService userService;
     private AuthenticationManager authenticationManager;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private JwtGenerator jwtGenerator;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtGenerator jwtGenerator) {
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtGenerator jwtGenerator, BalanceService balanceService, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
+        this.balanceService = balanceService;
+        this.userService = userService;
     }
 
     @PostMapping("login")
@@ -49,7 +56,7 @@ public class AuthController {
         if (userRepository.existsByUsername(registerCommand.getUsername())) {
             throw new UsernameAlreadyExists("username is already taken");
         }
-        userRepository.save(new UserEntity(registerCommand.getUsername(), passwordEncoder.encode(registerCommand.getPassword())));
+        userService.saveNewUserInitialiser(registerCommand.getUsername(), registerCommand.getPassword(), "user");
         return new ResponseEntity<>(authenticationAndGenerateToken(registerCommand.getUsername(), registerCommand.getPassword()), HttpStatus.OK);
     }
 

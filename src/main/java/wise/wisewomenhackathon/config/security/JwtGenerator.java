@@ -1,4 +1,4 @@
-package wise.wisewomenhackathon.config;
+package wise.wisewomenhackathon.config.security;
 
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication;
 
 import java.util.Date;
 
-import static wise.wisewomenhackathon.config.JwtConstants.JWT_EXPIRATION;
-import static wise.wisewomenhackathon.config.JwtConstants.JWT_SECRET;
+import static wise.wisewomenhackathon.config.security.JwtConstants.JWT_EXPIRATION;
+import static wise.wisewomenhackathon.config.security.JwtConstants.JWT_SECRET;
 
 @Component
 public class JwtGenerator {

@@ -1,4 +1,4 @@
-package wise.wisewomenhackathon.config;
+package wise.wisewomenhackathon.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import wise.wisewomenhackathon.config.CustomUserDetailsService;
 
 import java.io.IOException;
 
