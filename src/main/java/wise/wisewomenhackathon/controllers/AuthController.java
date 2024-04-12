@@ -1,7 +1,9 @@
 package wise.wisewomenhackathon.controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,17 +13,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import wise.wisewomenhackathon.Exceptions.UsernameAlreadyExists;
 import wise.wisewomenhackathon.config.security.JwtGenerator;
-import wise.wisewomenhackathon.controllers.commands.BalanceCommand;
 import wise.wisewomenhackathon.controllers.commands.LoginCommand;
 import wise.wisewomenhackathon.controllers.commands.RegisterCommand;
 import wise.wisewomenhackathon.controllers.response.AuthResponse;
-import wise.wisewomenhackathon.model.UserEntity;
 import wise.wisewomenhackathon.repository.UserRepository;
 import wise.wisewomenhackathon.service.BalanceService;
 import wise.wisewomenhackathon.service.UserService;
 
+
 @RestController
-//@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://127.0.0.1:3000", allowCredentials = "true")
 @RequestMapping("/api/auth")
 public class AuthController {
     private final BalanceService balanceService;
@@ -42,13 +43,34 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginCommand loginCommand) {
+    public ResponseEntity<Void> login(@RequestBody LoginCommand loginCommand, HttpServletResponse response) {
         try {
-            return new ResponseEntity<>(authenticationAndGenerateToken(loginCommand.getUsername(), loginCommand.getPassword()), HttpStatus.OK);
+
+            AuthResponse authResponse = authenticationAndGenerateToken(loginCommand.getUsername(), loginCommand.getPassword());
+
+            ResponseCookie jwtTokenCookie = ResponseCookie.from("accessToken", authResponse.accessToken)
+                    .httpOnly(true)
+                    .sameSite("None")
+                    .secure(true)
+                    .path("/")
+                    .domain("localhost")
+                    .maxAge(Math.toIntExact(3600))
+                    .build();
+            ResponseCookie userIdCookie = ResponseCookie.from("userId", authResponse.userId)
+                    .httpOnly(true)
+                    .sameSite("None")
+                    .secure(true)
+                    .path("/")
+                    .domain("localhost")
+                    .maxAge(Math.toIntExact(3600))
+                    .build();
+            response.addHeader("Set-Cookie", jwtTokenCookie.toString());
+            response.addHeader("Set-Cookie", userIdCookie.toString());
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } catch(Exception e) {
             System.out.println("error was " + e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("register")

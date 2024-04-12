@@ -40,8 +40,9 @@ public class BalanceController {
         balanceService.saveOrUpdateBalance(securityUtils.getUserIdFromToken(), balance);
     }
 
-    @GetMapping(value = "/balance/{id}")
-    public ResponseEntity<BalanceResponse> balance(@PathVariable(value = "id") Long userId) {
+    @GetMapping(value = "/balance")
+    public ResponseEntity<BalanceResponse> balance(@CookieValue Long userId) {
+        System.out.println("userId: " + userId);
         // vulnerability: there is no authorization check here
         /*Long userIdFromToken = getUserIdFromToken();
         if (!userIdFromToken.equals(userId)) {
