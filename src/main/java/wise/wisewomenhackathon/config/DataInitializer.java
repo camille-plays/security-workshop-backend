@@ -17,9 +17,9 @@ public class DataInitializer {
 
     @PostConstruct
     public void initializeCharitiesAndUsers() {
-        userService.saveNewUserInitialiser("charity1", "password", "charity");
-        userService.saveNewUserInitialiser("charity2", "password", "charity");
-        userService.saveNewUserInitialiser("charity3", "password", "charity");
+        userService.saveNewUserInitialiser("Dog4Care", "password", "charity");
+        userService.saveNewUserInitialiser("EduPriv", "password", "charity");
+        userService.saveNewUserInitialiser("Green4ever", "password", "charity");
         userService.saveNewUserInitialiser("user1", "password", "user");
     }
 

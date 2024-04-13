@@ -79,7 +79,7 @@ public class AuthController {
             throw new UsernameAlreadyExists("username is already taken");
         }
         userService.saveNewUserInitialiser(registerCommand.getUsername(), registerCommand.getPassword(), "user");
-        return new ResponseEntity<>(authenticationAndGenerateToken(registerCommand.getUsername(), registerCommand.getPassword()), HttpStatus.OK);
+        return new ResponseEntity<>(authenticationAndGenerateToken(registerCommand.getUsername(), registerCommand.getPassword()), HttpStatus.NO_CONTENT);
     }
 
     private AuthResponse authenticationAndGenerateToken(String username, String password) {
