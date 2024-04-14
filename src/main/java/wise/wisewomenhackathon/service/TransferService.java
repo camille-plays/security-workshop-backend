@@ -22,13 +22,15 @@ public class TransferService {
     @Autowired
     BalanceService balanceService;
 
-    public void createTransfer(TransferCommand transferCommand) {
+    @Transactional
+    public BigDecimal createTransfer(TransferCommand transferCommand) {
         // Keep no authorization on purpose as vulnerability
         // vulnerability: transfer does not check balance limit of 100
         Balance sourceBalance = balanceService.balance(transferCommand.getSourceBalanceId()).orElseThrow(() -> new BalanceNotFoundException("source balance not found"));
         Balance destinationBalance = balanceService.balance(transferCommand.getDestinationBalanceId()).orElseThrow(() -> new BalanceNotFoundException("destination balance not found"));
         if (sourceBalance.getAmount().compareTo(transferCommand.getAmount()) >= 0) {
             processTransfer(sourceBalance, destinationBalance, transferCommand.getAmount());
+            return sourceBalance.getAmount().subtract(transferCommand.getAmount());
         } else {
             throw new InsufficientFoundsException("You dont have enough money in your balance to make this transfer");
         }
@@ -38,8 +40,9 @@ public class TransferService {
     protected void processTransfer(Balance sourceBalance, Balance destinationBalance, BigDecimal amount) {
         // vulnerability: balance can be increased with a negative value
         balanceService.updateBalanceAmount(sourceBalance.getBalanceId(), sourceBalance.getAmount().subtract(amount));
+        System.out.println("updating balance amount to " + sourceBalance.getAmount().subtract(amount) + " at the time of transfer");
         balanceService.updateBalanceAmount(destinationBalance.getBalanceId(), destinationBalance.getAmount().add(amount));
-        transferRepository.save(new Transfer(amount, sourceBalance.getBalanceId(), destinationBalance.getBalanceId()));        System.out.println("updated source balance");
+        transferRepository.save(new Transfer(amount, sourceBalance.getBalanceId(), destinationBalance.getBalanceId()));
     }
 
     public List<Transfer> getTransfers() {

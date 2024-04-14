@@ -37,10 +37,10 @@ public class UserService {
             return userRepository.findByUsername(username).get();
         }
         // Generate a random salt
-        String salt = generateSalt();
+        //String salt = generateSalt();
 
         // Concatenate the salt with the plaintext password
-        String saltedPassword = password + salt;
+        //String saltedPassword = password + salt;
 
         String hashedPassword = passwordEncoder.encode(password);
 

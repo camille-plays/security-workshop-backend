@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 public class TransferResponse {
 
-    private final BigDecimal amount;
+    public final BigDecimal newBalanceAmount;
 
     public TransferResponse(BigDecimal amount) {
-        this.amount = amount;
+        this.newBalanceAmount = amount;
     }
 }

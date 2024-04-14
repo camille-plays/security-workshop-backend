@@ -46,22 +46,7 @@ public class AuthController {
     public ResponseEntity<Void> login(@RequestBody LoginCommand loginCommand, HttpServletResponse response) {
         try {
             AuthResponse authResponse = authenticationAndGenerateToken(loginCommand.getUsername(), loginCommand.getPassword());
-            ResponseCookie jwtTokenCookie = ResponseCookie.from("accessToken", authResponse.accessToken)
-                    .httpOnly(true)
-                    .secure(false)
-                    .path("/")
-                    .domain("localhost")
-                    .maxAge(Math.toIntExact(3600))
-                    .build();
-            ResponseCookie userIdCookie = ResponseCookie.from("userId", authResponse.userId)
-                    .httpOnly(true)
-                    .secure(false)
-                    .path("/")
-                    .domain("localhost")
-                    .maxAge(Math.toIntExact(3600))
-                    .build();
-            response.addHeader("Set-Cookie", jwtTokenCookie.toString());
-            response.addHeader("Set-Cookie", userIdCookie.toString());
+            setCookies(response, authResponse);
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } catch(Exception e) {
             System.out.println("error was " + e.getMessage());
@@ -70,12 +55,14 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterCommand registerCommand) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterCommand registerCommand, HttpServletResponse response) {
         if (userRepository.existsByUsername(registerCommand.getUsername())) {
             throw new UsernameAlreadyExists("username is already taken");
         }
         userService.saveNewUserInitialiser(registerCommand.getUsername(), registerCommand.getPassword(), "user");
-        return new ResponseEntity<>(authenticationAndGenerateToken(registerCommand.getUsername(), registerCommand.getPassword()), HttpStatus.NO_CONTENT);
+        AuthResponse authResponse = authenticationAndGenerateToken(registerCommand.getUsername(), registerCommand.getPassword());
+        setCookies(response, authResponse);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
     private AuthResponse authenticationAndGenerateToken(String username, String password) {
@@ -88,4 +75,50 @@ public class AuthController {
         String token = jwtGenerator.generateToken(authentication, userId);
         return new AuthResponse(token, userId);
     }
+
+    @PostMapping("logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        removeCookies(response);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    private void removeCookies(HttpServletResponse response) {
+        ResponseCookie jwtTokenCookie = ResponseCookie.from("accessToken", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .domain("localhost")
+                .maxAge(0) // Setting maxAge to 0 will delete the cookie
+                .build();
+        ResponseCookie userIdCookie = ResponseCookie.from("userId", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .domain("localhost")
+                .maxAge(0) // Setting maxAge to 0 will delete the cookie
+                .build();
+        response.addHeader("Set-Cookie", jwtTokenCookie.toString());
+        response.addHeader("Set-Cookie", userIdCookie.toString());
+    }
+
+    private void setCookies(HttpServletResponse response, AuthResponse authResponse) {
+        ResponseCookie jwtTokenCookie = ResponseCookie.from("accessToken", authResponse.accessToken)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .domain("localhost")
+                .maxAge(Math.toIntExact(3600))
+                .build();
+        ResponseCookie userIdCookie = ResponseCookie.from("userId", authResponse.userId)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .domain("localhost")
+                .maxAge(Math.toIntExact(3600))
+                .build();
+        response.addHeader("Set-Cookie", jwtTokenCookie.toString());
+        response.addHeader("Set-Cookie", userIdCookie.toString());
+    }
+
+
 }

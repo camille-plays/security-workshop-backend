@@ -42,7 +42,6 @@ public class BalanceController {
 
     @GetMapping(value = "/balance")
     public ResponseEntity<BalanceResponse> balance(@CookieValue Long userId) {
-        System.out.println("userId: " + userId);
         // vulnerability: there is no authorization check here
         /*Long userIdFromToken = getUserIdFromToken();
         if (!userIdFromToken.equals(userId)) {
