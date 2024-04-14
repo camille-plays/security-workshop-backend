@@ -11,6 +11,9 @@ import java.util.UUID;
 @Table(name = "transfers")
 public class Transfer {
 
+    public Transfer() {
+    }
+
     public Transfer(BigDecimal amount, UUID sourceBalanceId, UUID destinationBalanceId) {
         this.amount = amount;
         this.sourceBalanceId = sourceBalanceId;
@@ -28,11 +31,26 @@ public class Transfer {
 
     @Column(name = "source_balance_id")
     @NotNull
-    @Getter
     private UUID sourceBalanceId;
 
     @Column(name = "destination_balance_id")
     @NotNull
-    @Getter
     private UUID destinationBalanceId;
+
+    public UUID getTransferId() {
+        return transferId;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public UUID getSourceBalanceId() {
+        return sourceBalanceId;
+    }
+
+    public UUID getDestinationBalanceId() {
+        return destinationBalanceId;
+    }
+
 }

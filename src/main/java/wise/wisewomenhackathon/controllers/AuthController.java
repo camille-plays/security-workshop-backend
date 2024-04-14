@@ -45,21 +45,17 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<Void> login(@RequestBody LoginCommand loginCommand, HttpServletResponse response) {
         try {
-
             AuthResponse authResponse = authenticationAndGenerateToken(loginCommand.getUsername(), loginCommand.getPassword());
-
             ResponseCookie jwtTokenCookie = ResponseCookie.from("accessToken", authResponse.accessToken)
                     .httpOnly(true)
-                    .sameSite("None")
-                    .secure(true)
+                    .secure(false)
                     .path("/")
                     .domain("localhost")
                     .maxAge(Math.toIntExact(3600))
                     .build();
             ResponseCookie userIdCookie = ResponseCookie.from("userId", authResponse.userId)
                     .httpOnly(true)
-                    .sameSite("None")
-                    .secure(true)
+                    .secure(false)
                     .path("/")
                     .domain("localhost")
                     .maxAge(Math.toIntExact(3600))

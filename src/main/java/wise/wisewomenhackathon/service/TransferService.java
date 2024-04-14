@@ -11,6 +11,7 @@ import wise.wisewomenhackathon.model.Transfer;
 import wise.wisewomenhackathon.repository.TransferRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class TransferService {
@@ -38,6 +39,10 @@ public class TransferService {
         // vulnerability: balance can be increased with a negative value
         balanceService.updateBalanceAmount(sourceBalance.getBalanceId(), sourceBalance.getAmount().subtract(amount));
         balanceService.updateBalanceAmount(destinationBalance.getBalanceId(), destinationBalance.getAmount().add(amount));
-        transferRepository.save(new Transfer(amount, sourceBalance.getBalanceId(), destinationBalance.getBalanceId()));
+        transferRepository.save(new Transfer(amount, sourceBalance.getBalanceId(), destinationBalance.getBalanceId()));        System.out.println("updated source balance");
+    }
+
+    public List<Transfer> getTransfers() {
+        return transferRepository.findAll();
     }
 }
