@@ -9,6 +9,7 @@ import wise.wisewomenhackathon.model.Transfer;
 import wise.wisewomenhackathon.service.BalanceService;
 import wise.wisewomenhackathon.service.TransferService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -23,11 +24,8 @@ public class TransferController {
 
     @PostMapping("/transfers")
     public ResponseEntity<TransferResponse> save(@RequestBody TransferCommand transferCommand) {
-        transferService.createTransfer(transferCommand);
-        return ResponseEntity.ok().body(
-                balanceService.balance(transferCommand.getSourceBalanceId())
-                        .map(balance -> new TransferResponse(balance.getAmount()))
-                        .orElseThrow()
+        return ResponseEntity.ok().body(new TransferResponse(
+                transferService.createTransfer(transferCommand))
         );
     }
 
