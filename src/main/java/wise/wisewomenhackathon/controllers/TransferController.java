@@ -9,7 +9,6 @@ import wise.wisewomenhackathon.model.Transfer;
 import wise.wisewomenhackathon.service.BalanceService;
 import wise.wisewomenhackathon.service.TransferService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController

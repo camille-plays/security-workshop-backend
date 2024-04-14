@@ -31,4 +31,9 @@ public class RestExceptionHandler {
     public ResponseEntity<String> balanceLimit(BalanceLimitReachedException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+    @ExceptionHandler(AuthorizationFlagException.class)
+    public ResponseEntity<String> getAuthorizationFlag(AuthorizationFlagException ex) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ex.getMessage());
+    }
+
 }

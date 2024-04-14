@@ -31,6 +31,10 @@ public class UserService {
         return userRepository.findByUserId(userId).orElseThrow();
     }
 
+    public UserEntity user(String username) {
+        return userRepository.findByUsername(username).orElseThrow();
+    }
+
     @Transactional
     public UserEntity saveNewUserInitialiser(String username, String password, String type) {
         if (userRepository.existsByUsername(username)) {

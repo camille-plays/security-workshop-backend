@@ -46,7 +46,10 @@ public class AuthController {
     public ResponseEntity<Void> login(@RequestBody LoginCommand loginCommand, HttpServletResponse response) {
         try {
             AuthResponse authResponse = authenticationAndGenerateToken(loginCommand.getUsername(), loginCommand.getPassword());
-            setCookies(response, authResponse);
+            ResponseCookie jwtTokenCookie = setCookie("userId", authResponse.userId);
+            ResponseCookie userIdCookie = setCookie("accessToken", authResponse.accessToken);
+            response.addHeader("Set-Cookie", jwtTokenCookie.toString());
+            response.addHeader("Set-Cookie", userIdCookie.toString());
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } catch(Exception e) {
             System.out.println("error was " + e.getMessage());
@@ -61,7 +64,10 @@ public class AuthController {
         }
         userService.saveNewUserInitialiser(registerCommand.getUsername(), registerCommand.getPassword(), "user");
         AuthResponse authResponse = authenticationAndGenerateToken(registerCommand.getUsername(), registerCommand.getPassword());
-        setCookies(response, authResponse);
+        ResponseCookie jwtTokenCookie = setCookie("userId", authResponse.userId);
+        ResponseCookie userIdCookie = setCookie("accessToken", authResponse.accessToken);
+        response.addHeader("Set-Cookie", jwtTokenCookie.toString());
+        response.addHeader("Set-Cookie", userIdCookie.toString());
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
@@ -78,46 +84,31 @@ public class AuthController {
 
     @PostMapping("logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        removeCookies(response);
+        ResponseCookie jwtTokenCookie = removeCookie("userId");
+        ResponseCookie userIdCookie = removeCookie("accessToken");
+        response.addHeader("Set-Cookie", jwtTokenCookie.toString());
+        response.addHeader("Set-Cookie", userIdCookie.toString());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    private void removeCookies(HttpServletResponse response) {
-        ResponseCookie jwtTokenCookie = ResponseCookie.from("accessToken", "")
+    private ResponseCookie setCookie(String key, String value) {
+        return ResponseCookie.from(key, value)
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
                 .domain("localhost")
-                .maxAge(0) // Setting maxAge to 0 will delete the cookie
+                .maxAge(Math.toIntExact(3600))
                 .build();
-        ResponseCookie userIdCookie = ResponseCookie.from("userId", "")
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .domain("localhost")
-                .maxAge(0) // Setting maxAge to 0 will delete the cookie
-                .build();
-        response.addHeader("Set-Cookie", jwtTokenCookie.toString());
-        response.addHeader("Set-Cookie", userIdCookie.toString());
     }
 
-    private void setCookies(HttpServletResponse response, AuthResponse authResponse) {
-        ResponseCookie jwtTokenCookie = ResponseCookie.from("accessToken", authResponse.accessToken)
+    private ResponseCookie removeCookie(String key) {
+        return ResponseCookie.from(key, "")
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
                 .domain("localhost")
-                .maxAge(Math.toIntExact(3600))
+                .maxAge(0) // Setting maxAge to 0 will delete the cookie
                 .build();
-        ResponseCookie userIdCookie = ResponseCookie.from("userId", authResponse.userId)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .domain("localhost")
-                .maxAge(Math.toIntExact(3600))
-                .build();
-        response.addHeader("Set-Cookie", jwtTokenCookie.toString());
-        response.addHeader("Set-Cookie", userIdCookie.toString());
     }
 
 

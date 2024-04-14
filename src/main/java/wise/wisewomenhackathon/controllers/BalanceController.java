@@ -35,7 +35,8 @@ public class BalanceController {
     @PostMapping(value = "/balances")
     @ResponseStatus(HttpStatus.CREATED)
     public void save(@RequestBody(required = false) BalanceCommand balanceCommand) {
-        // vulnerability: you can change your balance type to charity, then you will get displayed on other people's account as a recipient
+        // vulnerability: you can change your balance type to charity,
+        // then you will get displayed on other people's account as a recipient
         BalanceCommand balance = balanceCommand != null ? balanceCommand : new BalanceCommand();
         balanceService.saveOrUpdateBalance(securityUtils.getUserIdFromToken(), balance);
     }
@@ -47,14 +48,16 @@ public class BalanceController {
         if (!userIdFromToken.equals(userId)) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }*/
-        Balance balance = balanceService.balance(userId).orElseThrow(() -> new BalanceNotFoundException("Balance not found for user ID: " + userId));
+        Balance balance = balanceService.balance(userId)
+                .orElseThrow(() -> new BalanceNotFoundException("Balance not found for user ID: " + userId));
         return ResponseEntity.ok()
                 .body(new BalanceResponse(balance.getBalanceId(), balance.getAmount()));
     }
 
     @GetMapping(value = "/charities")
     public ResponseEntity<List<CharityResponse>> charities() {
-        List<Balance> charities = balanceService.charities().orElseThrow(() -> new BalanceNotFoundException("No charity balances found"));
+        List<Balance> charities = balanceService.charities()
+                .orElseThrow(() -> new BalanceNotFoundException("No charity balances found"));
         List<CharityResponse> responses = charities.stream()
                 .map(charity -> {
                     String username = userService.user(charity.getUserId()).getUsername();
