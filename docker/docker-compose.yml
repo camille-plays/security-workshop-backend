@@ -1,14 +1,20 @@
-version: '3'
-
+version: "3"
 services:
   postgres:
     image: postgres:latest
+    restart: always
     ports:
       - "5432:5432"
-    restart: always
-    hostname: postgres
     container_name: postgres
     environment:
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: postgres
+  backend:
+    image: ttl.sh/7cbe7cb2-3fd0-4527-9d45-ef0535a95477:1h
+    ports:
+      - "8080:8080"
+    restart: always
+    container_name: backend
+    depends_on:
+      - postgres
