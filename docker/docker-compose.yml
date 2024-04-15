@@ -5,18 +5,21 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    container_name: postgres
     environment:
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: postgres
-#  backend:
-#    image: ttl.sh/7cbe7cb2-3fd0-4527-9d45-ef0535a95477:1h
-#    ports:
-#      - "8080:8080"
-#    restart: always
-#    container_name: backend
-#    environment:
-#      POSTGRES_HOST: postgres
-#    depends_on:
-#      - postgres
+  backend:
+    image: ttl.sh/7cbe7cb2-3fd0-4527-9d45-ef0535a95477-backend:1h
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on:
+      - postgres
+  frontend:
+    image: ttl.sh/7cbe7cb2-3fd0-4527-9d45-ef0535a95477-frontend:1h
+    ports:
+      - "3000:3000"
+    restart: always
